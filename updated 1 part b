@@ -1,0 +1,163 @@
+<html>
+    <head>
+        <title>Form Validation</title>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+        <script>
+            $(document).ready(function () { 
+ 
+                $(".input").on("click",function(){
+                    var feedback="#"+$(this).attr('id')+"_feedback";
+                    reset_element(this,feedback);});
+
+                $("#form").on("submit",function(){return validate_all();});
+            });
+            
+            function validate_all(){
+                var username_result=validate_username("#username","#username_feedback");
+                var position_result=validate_position("#position","#position_feedback");
+                var type_result=validate_type("#type","#type_feedback")
+                return username_result && position_result && type_result;
+           }
+
+            function error_style(element, feedback) {
+                $(element).css("border-color","red");
+                $(feedback).css("color","red");
+                return false;
+            }
+
+            function correct_style(element, feedback) {
+                $(element).css("border-color","lightgray");
+                $(feedback).css("color","green");
+                $(feedback).html("&#10004");//the check mark
+                return true;
+            }
+
+            function reset_element(element,feedback) {
+                $(element).css("border-color","lightgray");
+                $(feedback).css("color","black");
+                $(feedback).html("");
+            }
+            
+            function validate_position(position,feedback){
+                if($(position).val()=="none"){
+                    $(feedback).text("You must select a position");
+                    return error_style(position,feedback);
+                }
+                else
+                    return correct_style(position,feedback);
+            }
+            
+            function validate_username(username,feedback){
+                var value=$(username).val().trim();
+                if(value==null || value==""){
+                    $(feedback).text("Username can't be empty");
+                    return error_style(username,feedback);
+                }
+                else if (value.length < 6 || value.length>10) {
+                    $(feedback).text("Username must be 6-10 characters");
+                    return error_style(username, feedback);
+                }
+                else if(/[^a-zA-Z_]+/.test(value)){
+                    $(feedback).text("Only word letters (a-z, A-Z, _)");
+                    return error_style(username, feedback);                    
+                }
+                else
+                    return correct_style(username, feedback);                
+            }
+            
+            function validate_type(type,feedback){
+                var selectedOption = $("input:radio[name=type]:checked").val();
+                
+                if(selectedOption==null){
+                    $(feedback).text("You must select a type");
+                    return error_style(type, feedback); 
+                }
+                
+                else
+                    return correct_style(type, feedback);         
+                
+            }
+
+            
+            
+        </script>
+        
+        <style>
+
+            div{
+                padding-top: 6px;
+            }
+
+            form{
+                border-color:lightgray;
+                border-width:1px;
+                border-style: solid;
+                width:60%;
+            }
+
+            label{
+                font-weight:bold;
+                font-family: tahoma;
+                font-size: 12px;
+                text-align: right;
+                width:100px;
+                display:block;
+                float:left;
+                padding:5px;
+            }
+
+            .input,.submit{
+                border-color:lightgray;
+                border-width:1px;
+                border-style:solid;
+            }
+            .submit{
+                margin:5px;
+                margin-left:50px;
+                width:65px;
+                padding:5px;
+                border-radius:3px;
+                background-color: rgb(245,245,245);
+                font-weight:bold;
+            }
+
+            .submit:hover{
+                background-color:rgb(240,240,240);
+                cursor:pointer;
+            }
+
+        </style>
+
+    </head>
+    <body>
+        <form id="form">
+
+            <div> <label>Username:</label>  
+                <input class="input" type="text" name="username" id="username"> <span id="username_feedback"></span>
+            </div>
+            <div> <label>E-mail:</label>  
+                <input class="input" type="text" name="email"> <span id="email_feedback"></span>
+            </div>
+            <div>
+                <label>Position:</label>
+                <select name="position" class="input" id="position">
+                    <option value="none">Not selected</option>
+                    <option value="engineer">Engineer</option>
+                    <option value="doctor">Doctor</option>
+                    <option value="mechanic">Car Mechanic</option>
+                </select>
+                <span id="position_feedback"></span>
+            </div>
+            <div> <label>Type:</label>  
+                <input type="radio" name="type" value="full" id="type">Full-time<br>
+                <input type="radio" name="type" value="part" id="type">Part-time
+                <span id="type_feedback"></span>
+            </div>
+            <div>
+                <input type="submit" class="submit" value="Submit"> 
+            </div>
+
+
+        </form>
+    </body>
+</html>
